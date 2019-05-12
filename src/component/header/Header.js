@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu } from 'semantic-ui-react'
+import { Menu, Button } from 'semantic-ui-react'
+import {logout} from '../../store/logoutReducer'
+import { connect } from 'react-redux';
 
 class Header extends Component {
 
+    onLogout = () => {
+        this.props.logout();
+    }
     render() {
         return (
             <Menu>
@@ -15,6 +20,9 @@ class Header extends Component {
                 </Menu.Item>
 
                 <Menu.Menu position="right">
+                    <Menu.Item>
+                        <Button onClick={this.onLogout}>로그아웃</Button>
+                    </Menu.Item>
                     <Menu.Item>
                         <Link to="/login">로그인</Link>
                     </Menu.Item>
@@ -29,4 +37,9 @@ class Header extends Component {
     }
 }
 
-export default Header;
+const mapDispatchToProps =  (dispatch) => {
+    return {
+        logout : () => dispatch(logout())
+    }
+}
+export default connect(null, mapDispatchToProps)(Header);
