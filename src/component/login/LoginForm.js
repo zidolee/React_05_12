@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {login} from '../../store/loginReducer'
+import {login, loginValidationFailed} from '../../store/loginReducer'
 
 import { Button, Form, Message } from 'semantic-ui-react'
 
@@ -9,25 +9,8 @@ class LoginForm extends Component {
     state = {
         email: '',
         password: '',
-        message: ''
     }
 
-    static getDerivedStateFromProps = (props) => {
-        const {error} = props;
-        if(error) {
-            return {
-                message  : error.message
-            }
-        } else {
-            if(!this.state) {
-                return null;
-            }
-            const {message} = this.state;
-            return {
-                message : message,
-            }
-        }
-    }
 
     onHandleChange = (e) => {
         this.setState({
@@ -46,30 +29,23 @@ class LoginForm extends Component {
         } = this.state;
 
         if (!email) {
-            this.setState({
-                message: '이메일을 입력하세요'
-            })
+            this.props.loginValidationFailed(new Error('이메일을 입력하세요'))
             return;
         }
 
         if (!password) {
-            this.setState({
-                message: '비밀번호를 입력하세요'
-            })
+            this.props.loginValidationFailed(new Error('비밀번호를 입력하세요'))
             return;
         }
 
-        this.setState({
-            message: ''
-        })
 
        this.props.login(email, password);
     }
 
     render() {
         
-        const { email, password, message } = this.state;
-        const { isLoading} = this.props;
+        const { email, password } = this.state;
+        const { isLoading, error} = this.props;
         return (
             <Form>
                 <Form.Field>
@@ -81,11 +57,9 @@ class LoginForm extends Component {
                     <input name="password" type="password" placeholder='비밀번호' value={password} onChange={this.onHandleChange} />
                 </Form.Field>
                 <Button type='submit' loading={isLoading} onClick={this.onLogin}>로그인</Button>
-
-                {
-                    message ? <Message content={message} /> : null
+                {   
+                    error ? <Message content={error.message} /> : null
                 }
-
             </Form>
         )
     }
@@ -99,7 +73,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        login : (email, password) => dispatch(login(email, password))
+        login : (email, password) => dispatch(login(email, password)),
+        loginValidationFailed : (error) => dispatch(loginValidationFailed(error))
     }
 }
 
