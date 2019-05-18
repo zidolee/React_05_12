@@ -10,8 +10,11 @@ class Header extends Component {
         this.props.logout();
     }
     render() {
-        return (
-            <Menu>
+        const {user} = this.props;
+
+        if(user) {
+            return (
+                <Menu>
                 <Menu.Item header>
                     게시판
                 </Menu.Item>
@@ -23,6 +26,21 @@ class Header extends Component {
                     <Menu.Item>
                         <Button onClick={this.onLogout}>로그아웃</Button>
                     </Menu.Item>
+                </Menu.Menu>
+            </Menu>
+            )
+
+        } else {
+            return (
+                <Menu>
+                <Menu.Item header>
+                    게시판
+                </Menu.Item>
+                <Menu.Item>
+                    <Link to="/">홈</Link>
+                </Menu.Item>
+
+                <Menu.Menu position="right">
                     <Menu.Item>
                         <Link to="/login">로그인</Link>
                     </Menu.Item>
@@ -33,7 +51,15 @@ class Header extends Component {
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
-        )
+                )
+        }
+       
+    }
+}
+
+const maptStateToProps = (state) => {
+    return {
+        user: state.auth.user,
     }
 }
 
@@ -42,4 +68,4 @@ const mapDispatchToProps =  (dispatch) => {
         logout : () => dispatch(logout())
     }
 }
-export default connect(null, mapDispatchToProps)(Header);
+export default connect(maptStateToProps, mapDispatchToProps)(Header);
