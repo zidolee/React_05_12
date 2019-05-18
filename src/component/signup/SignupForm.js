@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { Button, Checkbox, Form, Message } from 'semantic-ui-react'
-import {signup} from '../../store/signupReducer'
+import {signup, signupValidationFailed} from '../../store/signupReducer'
 
 class SignupForm extends Component {
     state = {
@@ -10,7 +10,6 @@ class SignupForm extends Component {
         password: '',
         password2: '',
         terms: false,
-        message: ''
     }
 
     onHandleChange = (e) => {
@@ -40,36 +39,27 @@ class SignupForm extends Component {
         } = this.state;
 
         if (!email) {
-            this.setState({
-                message: '이메일을 입력하세요'
-            })
+            // this.setState({
+            //     message: '이메일을 입력하세요'
+            // })
+            this.props.signupValidationFailed(new Error("이메일을 입력허세요"))
             return;
         }
 
         if (!password) {
-            this.setState({
-                message: '비밀번호를 입력하세요'
-            })
+            this.props.signupValidationFailed(new Error("비밀번호를 입력허세요"))
             return;
         }
 
         if (password !== password2) {
-            this.setState({
-                message: '비밀번호가 일치하지 않습니다'
-            })
+            this.props.signupValidationFailed(new Error("비밀번호가 일치하지 않습니다"))
             return;
         }
 
         if (!terms) {
-            this.setState({
-                message: '서비스 이용약관에 동의하세요'
-            })
+            this.props.signupValidationFailed(new Error("서비스 이용약관에 동의하세요"))
             return;
         }
-
-        this.setState({
-            message: ''
-        })
 
         //서버로 회원가입 해야지!!
         this.props.signup(email, password);
@@ -77,8 +67,8 @@ class SignupForm extends Component {
 
     render() {
         
-        const { email, password, password2, terms, message } = this.state;
-        const { isLoading} = this.props;
+        const { email, password, password2, terms } = this.state;
+        const { isLoading, error} = this.props;
         return (
             <Form>
                 <Form.Field>
@@ -99,7 +89,7 @@ class SignupForm extends Component {
                 <Button type='submit' loading={isLoading} onClick={this.onSignup}>회원가입</Button>
 
                 {
-                    message ? <Message content={message} /> : null
+                    error ? <Message content={error.message} /> : null
                 }
 
             </Form>
@@ -110,11 +100,13 @@ class SignupForm extends Component {
 const mapStateToProps = (state) => {
     return {
         isLoading : state.signup.isLoading,
+        error: state.signup.error
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        signup: (email, password) => dispatch(signup(email, password))
+        signup: (email, password) => dispatch(signup(email, password)),
+        signupValidationFailed : (error) => dispatch(signupValidationFailed(error))
     }
 }
 

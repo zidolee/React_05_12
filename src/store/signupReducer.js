@@ -1,7 +1,9 @@
 import firebase from 'firebase'
+
 const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
 const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 const SIGNUP_FAILED = 'SIGNUP_FAILED'
+const SIGNUP_VALIDATION_FAILED = 'SIGNUP_VALIDATION_FAILED'
 
 function signupRequest() {
     return {
@@ -15,24 +17,28 @@ function signupSuccess() {
     }
 }
 
-function signupFailed() {
+function signupFailed(error) {
     return {
-        type: SIGNUP_FAILED
+        type: SIGNUP_FAILED,
+        payload: error
     }
 }
 
+export function signupValidationFailed(error) {
+    return {
+        type: SIGNUP_VALIDATION_FAILED,
+        payload: error
+    }
+}
 export function signup(email, password) {
     return (dispatch) => {
-
         dispatch(signupRequest());
-
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then( () => {
                 dispatch(signupSuccess());
             })
-            .catch(function(error) {
-                console.log(error);
-                dispatch(signupFailed());
+            .catch((error) => {
+                dispatch(signupFailed(error));
             });
         // api call
 
@@ -55,6 +61,7 @@ export default function signupReducer(state = initialState, action) {
                 isLoading: true,
                 isSuccess: false,
                 isFailed: false,
+                error: null,
             })
         case SIGNUP_SUCCESS:
             return Object.assign({}, state, {
@@ -67,6 +74,11 @@ export default function signupReducer(state = initialState, action) {
                 isLoading: false,
                 isSuccess: false,
                 isFailed: true,
+                error: action.payload
+            })
+        case SIGNUP_VALIDATION_FAILED:
+            return Object.assign({}, state, {
+                error: action.payload
             })
         default:
             return state;
