@@ -6,6 +6,7 @@ import Header from './component/header/Header'
 import HomePage from './page/home/HomePage'
 import LoginPage from './page/login/LoginPage'
 import SignupPage from './page/signup/SignupPage'
+import DisplayNamePage from './page/displayName/DisplayNamePage'
 
 
 class App extends Component {
@@ -15,10 +16,15 @@ class App extends Component {
       <Router>
         <Header />
         <Route path="/" exact component={() => {
-            if(this.props.user){
+
+            if(this.props.user && this.props.user.displayName) {
+
               return <HomePage/>
-            }else{
-              return <Redirect to="/login" />
+            } else if (this.props.user) {
+
+              return <Redirect to="/display-name"/>
+            } else {
+              return <Redirect to="/login"/>
             }
         }} />
         <Route path="/login" component={() => {
@@ -33,6 +39,15 @@ class App extends Component {
             return <Redirect to="/" />
           } else {
             return <SignupPage/>
+          }
+        }} />
+        <Route path="/display-name" component={ () => {
+          if(this.props.user && this.props.user.displayName) {
+            return <Redirect to="/"/>
+          } else if(this.props.user) {
+            return <DisplayNamePage />
+          } else {
+            return <Redirect to="/login"/>
           }
         }} />
       </Router>
