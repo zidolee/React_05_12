@@ -23,6 +23,9 @@ class Header extends Component {
                 </Menu.Item>
 
                 <Menu.Menu position="right">
+                    <Menu.Item header>
+                        {user.displayName}
+                    </Menu.Item>
                     <Menu.Item>
                         <Button onClick={this.onLogout}>로그아웃</Button>
                     </Menu.Item>
