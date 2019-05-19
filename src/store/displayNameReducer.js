@@ -24,7 +24,7 @@ function updateDisplayNameFailed(error){
     }
 }
 
-export function updateDisplayName(displayName) {
+export function updateDisplayName(displayName) {    // 비동기 작업
     return (dispatch) => {
         dispatch(updateDisplayNameRequest());
         const user = firebase.auth().currentUser;
