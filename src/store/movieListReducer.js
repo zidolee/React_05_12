@@ -8,13 +8,22 @@ function getMovieListRequest() {
         type: GET_MOVIE_LIST_REQUEST
     }
 }
-
-function getMovieListSuccess(list) {
+function getMovieListSuccess(list, last) {
     return{
         type: GET_MOVIE_LIST_SUCCESS,
-        payload: list
+        payload: {
+            list: list,
+            last : last,
+        }
     }
 }
+
+// function getMovieListSuccess(list) {
+//     return{
+//         type: GET_MOVIE_LIST_SUCCESS,
+//         payload: list
+//     }
+// }
 
 function getMovieListFailed(error) {
     return{
@@ -23,15 +32,24 @@ function getMovieListFailed(error) {
     }
 }
 
-export function getMovieList() {
+export function getMovieList(last) {
     return (dispatch) => {
         dispatch(getMovieListRequest());
-        firebase.firestore().collection('Movies')
-        .limit(10)
-        .get()
+        let query = null;
+        if(last) {
+            query = firebase.firestore().collection('Movies')
+            .orderBy('createdAt')
+            .startAfter(last)
+            .limit(5)
+        } else {
+            query = firebase.firestore().collection('Movies')
+            .orderBy('createdAt')
+            .limit(5)
+        }
+        query.get()
         .then((snapshot) => {
             //[document,document,document...]
-            dispatch(getMovieListSuccess(snapshot.docs));
+            dispatch(getMovieListSuccess(snapshot.docs, last));
         }).catch((error) => {
             console.log(error)
             dispatch(getMovieListFailed(error));
@@ -59,7 +77,7 @@ export default function movieListReducer(state = initialState, action) {
             return Object.assign({}, state, {
                 isLoading: false,
                 isSuccess: true,
-                list: [...action.payload]
+                list: action.payload.last ? [...state.list, ...action.payload.list] : [...action.payload.list]
             })
         case GET_MOVIE_LIST_FAILED:
             return Object.assign({}, state, {
