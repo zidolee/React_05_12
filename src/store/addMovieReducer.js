@@ -1,4 +1,5 @@
 import firebase from 'firebase'
+import uuid from 'uuid';
 
 const INIT_ADD_MOVIE_STATE = 'INIT_ADD_MOVIE_STATE';
 
@@ -40,20 +41,54 @@ function addMovieFailed (error) {
     }
 }
 
-export function addMovie(name, director, openedAt, description) {
+export function addMovie(name, director, openedAt, description, file) {
     return (dispatch) => {
         dispatch(addMovieRequest());
-
-        firebase.firestore().collection('Movies').add({
-            name: name,
-            director : director,
-            openedAt : openedAt,
-            description : description,
-        }).then(() => {
-            dispatch(addMovieSuccess());
-        }).catch((error) => {
-            dispatch(addMovieFailed(error));
-        })
+        //이미지 => 스토어에 저장
+        //데이터 => DB에 저장
+        if(file) {
+            // 이미지 저장 하고 이미지 다운로드 url을 가지고 와서
+            // 데이터 베이스에 같이 저장
+            
+            const filename = uuid.v1();
+            const extension = file.name.split('.').pop();
+            const url = `movies/${filename}.${extension}`;
+            const movieRef = firebase.storage().ref().child(url);
+            movieRef.put(file)
+            .then((snapshot) => {
+                return snapshot.ref.getDownloadURL();   //서버로부터 다운로드(주소)
+            })
+            .then((downloadURL) => {
+              return firebase.firestore().collection('Movies').add({
+                    name: name,
+                    imageURL : downloadURL,
+                    director : director,
+                    openedAt : openedAt,
+                    description : description,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                })
+            })
+            .then(() => {
+                dispatch(addMovieSuccess());
+            }).catch((error) => {
+                dispatch(addMovieFailed(error));
+            })
+        } else {
+            firebase.firestore().collection('Movies').add({
+                name: name,
+                director : director,
+                openedAt : openedAt,
+                description : description,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }).then(() => {
+                dispatch(addMovieSuccess());
+            }).catch((error) => {
+                dispatch(addMovieFailed(error));
+            })
+        }
+        
     }
 }
 
