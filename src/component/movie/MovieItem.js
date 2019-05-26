@@ -23,7 +23,7 @@ class MovieItem extends Component {
             <div>
                 <Card fluid>
                     <div style={{
-                        height:300, 
+                        height:450, 
                         backgroundImage:`url(${imageUrl})`,
                         backgroundPositionL:'center',
                         backgroundSize:'cover',
