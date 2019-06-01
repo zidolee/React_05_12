@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import {DELETE_MYMOVIE_SUCCESS} from './types'
 const GET_MYMOVIE_LIST_REQUEST = 'GET_MYMOVIE_LIST_REQUEST';
 const GET_MYMOVIE_LIST_SUCCESS = 'GET_MYMOVIE_LIST_SUCCESS';
 const GET_MYMOVIE_LIST_FAILED = 'GET_MYMOVIE_LIST_FAILED';
@@ -42,12 +43,12 @@ export function getMyMovieList(last) {
             .where('userId','==' ,userId)
             .orderBy('createdAt')
             .startAfter(last)//그전 값 그 다음 것
-            .limit(5)
+            .limit(3)
         } else {
             query = firebase.firestore().collection('Movies')
             .where('userId','==',userId)
             .orderBy('createdAt')
-            .limit(5)
+            .limit(3)
         }
         query.get()
         .then((snapshot) => {
@@ -80,6 +81,7 @@ export default function myMovieListReducer(state = initialState, action) {
             return Object.assign({}, state, {
                 isLoading: false,
                 isSuccess: true,
+                isFailed: false,
                 list: action.payload.last ? [...state.list, ...action.payload.list] : [...action.payload.list]
             })
         case GET_MYMOVIE_LIST_FAILED:
@@ -88,6 +90,10 @@ export default function myMovieListReducer(state = initialState, action) {
                 isSuccess: false,
                 isFailed: true,
                 error:  action.payload
+            })
+        case DELETE_MYMOVIE_SUCCESS :
+            return Object.assign({}, state, {
+                list : state.list.filter((doc) => doc.id !== action.payload)
             })
         default:
             return state

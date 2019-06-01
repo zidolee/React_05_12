@@ -4,7 +4,8 @@ class MyMovieItem extends Component {
     // MovieItem에 pros를 전달 하지 않을때 들어가는 것
     static defaultProps = {
         id : null,
-        onClick : null,
+        onDelete : null,
+        onUpdate : null,
         imageUrl : '',
         name : '',
         openedAt : '',
@@ -12,9 +13,15 @@ class MyMovieItem extends Component {
         likeCnt : '',
     }
 
-    onClick = () => {
-        if(this.props.onClick && this.props.id){
-            this.props.onClick(this.props.id);
+    onDelete = () => {
+        if(this.props.onDelete && this.props.id){
+            this.props.onDelete(this.props.id);
+        }
+    }
+
+    onUpdate = () => {
+        if(this.props.onUpdate && this.props.id){
+            this.props.onUpdate(this.props.id);
         }
     }
 
@@ -53,8 +60,8 @@ class MyMovieItem extends Component {
                             <Icon name='like' />
                             {likeCnt}
                         </a>
-                        <Button onClick={this.onClick}>수정하기</Button>
-                        <Button>삭제하기</Button>
+                        <Button onClick={this.onUpdate}>수정하기</Button>
+                        <Button onClick={this.onDelete}>삭제하기</Button>
                     </Card.Content>
                 </Card>
             </div>
