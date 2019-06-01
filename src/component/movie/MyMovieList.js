@@ -26,7 +26,7 @@ class MyMovieList extends Component {
     }
 
     onItemUpdateClick = (id) => {
-        console.log("update",id);
+        // console.log("update",id);
         this.props.history.push(`/movie/${id}/update`);     //withRouter 때문에 사용 가능
     }
     render() {

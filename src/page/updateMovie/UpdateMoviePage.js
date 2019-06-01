@@ -8,10 +8,11 @@ class UpdateMoviePage extends Component {
         console.log(this.props.match.params.movieId);
     }
     render() {
+        const movieId = this.props.match.params.movieId;
         return (
             <Grid centered>
                     <Grid.Column mobile={15} tablet={12} computer={10}>
-                        <UpdateMovie/>
+                        <UpdateMovie movieId = {movieId}/>
                     </Grid.Column>
              </Grid>
         )

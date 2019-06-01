@@ -15,6 +15,7 @@ class MovieForm extends Component {
         description: '',
         image: null,
     }
+    //화면 최초 한번 동작
     componentDidMount() {
         const { 
             name,

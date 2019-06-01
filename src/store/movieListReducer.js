@@ -40,11 +40,11 @@ export function getMovieList(last) {
             query = firebase.firestore().collection('Movies')
             .orderBy('createdAt')
             .startAfter(last)
-            .limit(5)
+            .limit(3)
         } else {
             query = firebase.firestore().collection('Movies')
             .orderBy('createdAt')
-            .limit(5)
+            .limit(3)
         }
         query.get()
         .then((snapshot) => {

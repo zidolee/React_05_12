@@ -14,7 +14,7 @@ class Header extends Component {
 
         if(user) {
             return (
-                <Menu>
+                <Menu inverted style={{borderRadius: 0}}>
                 <Menu.Item header>
                     게시판
                 </Menu.Item>
@@ -32,8 +32,8 @@ class Header extends Component {
                     <Menu.Item header>
                         {user.displayName}
                     </Menu.Item>
-                    <Menu.Item>
-                        <Button onClick={this.onLogout}>로그아웃</Button>
+                    <Menu.Item onClick={this.onLogout}>
+                        로그아웃
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
@@ -41,7 +41,7 @@ class Header extends Component {
 
         } else {
             return (
-                <Menu>
+                <Menu inverted style={{borderRadius: 0}}>
                 <Menu.Item header>
                     게시판
                 </Menu.Item>
