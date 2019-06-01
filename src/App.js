@@ -12,12 +12,19 @@ import UpdateMoviePage from './page/updateMovie/UpdateMoviePage'
 import TestPage from './page/test/TestPage'
 import MyMovieListPage from './page/myMovieList/MyMovieListPage'
 
-
+import {createBrowserHistory} from 'history'
+import ReactGA from 'react-ga'
+const history = createBrowserHistory();
+//hisotry 상태가 바뀔때마다 실행
+history.listen((location, action) => {
+  const url = location.pathname + location.search
+  ReactGA.pageview(url);
+})
 class App extends Component {
 
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <Header />
         <Route path="/" exact component={() => {
 

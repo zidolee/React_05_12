@@ -5,6 +5,7 @@ import {Grid, Button} from 'semantic-ui-react'
 import {getMyMovieList} from '../../store/myMovieListReducer'
 import MyMovieItem from './MyMovieItem'
 import {deleteMyMovie} from '../../store/deleteMyMovieReducer'
+import ReactGa from 'react-ga'
 
 class MyMovieList extends Component {
     componentDidMount() {
@@ -24,7 +25,7 @@ class MyMovieList extends Component {
       console.log('delete',id);
       this.props.deleteMyMovie(id);
     }
-
+    
     onItemUpdateClick = (id) => {
         // console.log("update",id);
         this.props.history.push(`/movie/${id}/update`);     //withRouter 때문에 사용 가능
